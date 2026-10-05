@@ -109,4 +109,4 @@ Add a license of your choice (e.g. MIT) in a `LICENSE` file.
 
 ## 👤 Author
 
-**[Abdo Mosa]** — [LinkedIn](https://docs.google.com/forms/d/e/1FAIpQLScuSqUFpMGHDOFTf1cwEYzkdCfZnwOVkz_0UDl1cyUs4KbH6w/viewform?usp=publish-editor)
+**[Abdo Mosa]** — [LinkedIn](https://www.linkedin.com/in/abdo-mosa-819bb6343?utm_source=share_via&utm_content=profile&utm_medium=member_ios)
