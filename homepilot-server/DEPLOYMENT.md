@@ -1,71 +1,100 @@
 # نشر HomePilot (Deployment)
 
-دليل مختصر لنشر HomePilot على بيئة حقيقية، بعد التطوير المحلي.
+الطريقة دي كلها **مجانية**: داتابيز على **MongoDB Atlas**، السيرفر على **Render**، والواجهة على **Vercel**.
 
-## 1. قاعدة البيانات — MongoDB Atlas
-
-1. أنشئ حساب مجاني على [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas)
-2. أنشئ Cluster مجاني (M0)
-3. من Network Access، اسمح بالوصول من عنوان IP الخاص بالسيرفر (أو `0.0.0.0/0` مؤقتًا للاختبار فقط)
-4. من Database Access، أنشئ مستخدمًا بكلمة مرور
-5. انسخ الـ connection string، هيكون شكله:
-   ```
-   mongodb+srv://<user>:<password>@cluster0.xxxxx.mongodb.net/homepilot
-   ```
-   وحطه في `MONGO_URI` بالسيرفر.
-
-## 2. الباك إند — عن طريق Docker
-
-```bash
-cd homepilot-server
-cp .env.example .env   # ثم عدّل القيم الحقيقية
-docker compose up --build -d
+```
+المتصفح ──▶ Vercel (الواجهة)
+               │  أي طلب يبدأ بـ /api
+               ▼
+            Render (السيرفر)  ──▶  MongoDB Atlas
 ```
 
-هيشغّل الباك إند وقاعدة بيانات MongoDB محلية معًا. للإنتاج الحقيقي، استخدم MongoDB Atlas بدل الـ container المحلي (احذف خدمة `mongo` من `docker-compose.yml` وحط الـ `MONGO_URI` بتاع Atlas في `.env`).
+الواجهة بتبعت طلبات `/api` لنفس دومينها، وVercel هو اللي بيحوّلها للسيرفر (ملف `homepilot-client/vercel.json`).
+ده بيخلّي كوكي تسجيل الدخول (`SameSite=Strict`) يشتغل صح، ومفيش مشاكل CORS.
 
-### أو عن طريق Render / Railway (بدون Docker)
+## الترتيب مهم
+1. Atlas ← 2. Render ← 3. تعديل `vercel.json` ← 4. Vercel ← 5. ارجع لـ Render وظبّط `CLIENT_URL`.
 
-1. اربط الريبو بحساب [Render](https://render.com) أو [Railway](https://railway.app)
-2. Build command: `npm install && npm run build`
-3. Start command: `npm start`
-4. ضيف كل متغيرات `.env` في إعدادات الـ Environment Variables بلوحة التحكم
-5. تأكد إن `CLIENT_URL` بيشاور على دومين الفرونت إند الحقيقي بعد نشره (مش localhost)
+## 1. الداتابيز — MongoDB Atlas
+1. اعمل حساب على [mongodb.com/cloud/atlas](https://www.mongodb.com/cloud/atlas) وأنشئ Cluster مجاني (M0). اختار منطقة قريبة (مثلًا Frankfurt).
+2. **Database Access** ← Add New Database User ← اسم وكلمة مرور (حروف وأرقام بس، من غير رموز).
+3. **Network Access** ← Add IP Address ← `0.0.0.0/0` (لازم، لأن عناوين Render المجاني بتتغيّر).
+4. **Connect** ← Drivers ← انسخ الرابط، واستبدل `<password>` بكلمة المرور، وحط `/homepilot` قبل علامة `?`:
+   ```
+   mongodb+srv://USER:PASSWORD@cluster0.xxxxx.mongodb.net/homepilot?retryWrites=true&w=majority
+   ```
 
-## 3. الفرونت إند
+## 2. السيرفر — Render
+New ← **Web Service** ← اربط الريبو، وبعدين:
 
-```bash
-cd homepilot-client
-npm install
-npm run build --configuration production
-```
-
-الناتج هيكون في `dist/homepilot-client/browser` — ارفعه على أي استضافة static:
-
-- **Vercel / Netlify**: اربط الريبو، حدد `homepilot-client` كـ root directory، وBuild command: `ng build --configuration production`، وOutput directory: `dist/homepilot-client/browser`
-- **مهم**: قبل الـ build، عدّل `src/environments/environment.prod.ts` بحيث `apiUrl` يشاور على دومين الباك إند الحقيقي بعد نشره.
-
-## 4. متغيرات بيئة الإنتاج المهمة
-
-| المتغير | ملاحظة |
+| الخانة | القيمة |
 |---|---|
-| `JWT_SECRET`, `JWT_REFRESH_SECRET` | **لازم** تكون قيم عشوائية طويلة وسرية جديدة، مختلفة عن أي قيمة استُخدمت في التطوير |
+| Root Directory | `homepilot-server` |
+| Build Command | `npm install --include=dev && npm run build` |
+| Start Command | `npm start` |
+| Instance Type | Free |
+
+> ⚠️ لازم `--include=dev`: لأن `NODE_ENV=production` بيخلّي npm يتخطى TypeScript، والبناء يفشل من غيره.
+
+**Environment Variables:**
+
+| المتغير | القيمة |
+|---|---|
 | `NODE_ENV` | `production` |
-| `CLIENT_URL` | دومين الفرونت إند الحقيقي (بدون `/` في الآخر) |
-| `MONGO_URI` | رابط Atlas الحقيقي |
-| `STRIPE_SECRET_KEY` / `STRIPE_WEBHOOK_SECRET` | مفاتيح Live Mode وقت الإطلاق الفعلي، مش Test Mode |
+| `NODE_VERSION` | `22` |
+| `MONGO_URI` | رابط Atlas من الخطوة 1 |
+| `JWT_SECRET` | قيمة عشوائية طويلة جديدة (تحت) |
+| `JWT_REFRESH_SECRET` | قيمة عشوائية طويلة **مختلفة** |
+| `TRUST_PROXY` | `2` |
+| `CLIENT_URL` | مؤقتًا `https://temp.vercel.app`، وتتعدّل في الخطوة 5 |
 
-## 5. Webhook الخاص بـ Stripe في الإنتاج
-
-من لوحة Stripe: Developers → Webhooks → Add endpoint، وحط:
+لتوليد قيمة عشوائية (شغّلها مرتين):
+```bash
+node -e "console.log(require('crypto').randomBytes(48).toString('hex'))"
 ```
-https://your-backend-domain.com/api/payments/webhook
-```
-انسخ الـ Signing secret الناتج وحطه في `STRIPE_WEBHOOK_SECRET`.
 
-## 6. بعد النشر — تفعيل حساب أدمن
+بعد النشر هتلاقي رابط زي `https://homepilot-api.onrender.com`. اتأكد إن `https://.../api/health` بيرد `{"status":"ok"}`.
 
+**اختياري (مفيد):**
+- `CLOUDINARY_CLOUD_NAME` / `CLOUDINARY_API_KEY` / `CLOUDINARY_API_SECRET`: على Render المجاني الملفات المرفوعة بتتمسح مع كل إعادة تشغيل، فـ Cloudinary (مجاني) بيحفظها فعلًا.
+- `EMAIL_HOST` / `EMAIL_PORT` / `EMAIL_USER` / `EMAIL_PASSWORD` / `EMAIL_FROM`: من غيرهم مفيش إيميلات (تفعيل ونسيت كلمة المرور مش هتوصل).
+- `AI_API_KEY`: **سيبه فاضي** في النسخة العامة، لأن أي زائر هيقدر يصرف من رصيدك. لو عاوزه، استخدم مفتاح جديد وحط له حد صرف أقصى من لوحة Anthropic.
+- `STRIPE_*`: سيبهم فاضيين في الديمو (الدفع هيرد «مش متظبّط»).
+
+## 3. اربط الواجهة بالسيرفر
+افتح `homepilot-client/vercel.json` وغيّر `CHANGE-ME.onrender.com` لرابط السيرفر من Render (من غير `https://`)، واحفظ ثم ارفع التعديل لـ GitHub.
+
+## 4. الواجهة — Vercel
+Add New ← **Project** ← اختار الريبو:
+
+| الخانة | القيمة |
+|---|---|
+| Root Directory | `homepilot-client` |
+| Framework Preset | Angular (بيتعرّف لوحده) |
+
+ومن **Settings ← General ← Node.js Version** اختار أعلى نسخة متاحة (24.x)، لأن Angular 22 محتاج Node 22.22.3 أو أحدث.
+لو Vercel ماعرفش مكان الناتج: Output Directory = `dist/homepilot-client/browser`.
+
+## 5. أكمل الدايرة
+ارجع Render ← Environment ← غيّر `CLIENT_URL` لرابط Vercel الحقيقي (من غير `/` في الآخر). السيرفر هيعيد التشغيل لوحده.
+
+## تأكد إنه شغّال
+1. افتح `https://رابط-vercel/api/health`: لازم يرد `{"status":"ok"}` (يثبت إن التحويل شغّال).
+2. سجّل حساب، وادخل، واعمل **Refresh** للصفحة: لازم تفضل داخل.
+
+## ملاحظات على الاستضافة المجانية
+- **Render بينام** بعد 15 دقيقة من غير استخدام، وأول طلب بعدها بياخد حوالي دقيقة. حل مجاني: موقع [uptimerobot.com](https://uptimerobot.com) ← New Monitor ← HTTP(s) ← الرابط `https://رابط-render/api/health` ← كل 5 دقايق.
+- كل تعديل بتعمله وترفعه على GitHub، Render وVercel بينشروه تلقائيًا.
+
+## أدمن وباقات (من نفس بيئة الداتابيز)
 ```bash
 npm run make-admin -- someone@example.com
+npm run set-plan -- someone@example.com premium
 ```
-(شغّلها من نفس السيرفر أو من بيئة متصلة بنفس قاعدة البيانات)
+
+## Docker (اختياري)
+```bash
+cd homepilot-server
+cp .env.example .env
+docker compose up --build -d
+```

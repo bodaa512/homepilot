@@ -16,6 +16,11 @@ export const env = {
   port: parseInt(process.env.PORT ?? '5050', 10),
   clientUrl: required('CLIENT_URL', 'http://localhost:4200'),
 
+  // How many reverse proxies sit in front of the API (Render's load balancer, Vercel's rewrite, ...).
+  // 0 = none (local dev). Without this, behind a proxy every visitor looks like the same IP, so the
+  // rate limiters (300 req / 15 min globally, 20 / 15 min for login) would be shared by ALL users.
+  trustProxy: parseInt(process.env.TRUST_PROXY ?? '0', 10),
+
   mongoUri: required('MONGO_URI', 'mongodb://localhost:27017/homepilot'),
 
   jwt: {

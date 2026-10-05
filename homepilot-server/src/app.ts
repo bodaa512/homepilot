@@ -15,6 +15,10 @@ import { PaymentController } from './controllers/payment.controller';
 export function createApp(): Application {
   const app = express();
 
+  if (env.trustProxy > 0) {
+    app.set('trust proxy', env.trustProxy);
+  }
+
   app.use(helmet());
   app.use(
     cors({
@@ -57,6 +61,11 @@ export function createApp(): Application {
       legacyHeaders: false,
     }),
   );
+
+  // Cheap liveness check — used by uptime pingers to keep a free-tier host awake.
+  app.get('/api/health', (_req, res) => {
+    res.json({ status: 'ok' });
+  });
 
   app.use('/api', routes);
   app.use('/api/docs', swaggerUi.serve, swaggerUi.setup(openApiSpec));
