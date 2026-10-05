@@ -1,12 +1,17 @@
 {
-  "rewrites": [
-    {
-      "source": "/api/:path*",
-      "destination": "https://CHANGE-ME.onrender.com/api/:path*"
+  "$schema": "https://openapi.vercel.sh/vercel.json",
+  "services": {
+    "homepilot-client": {
+      "root": "homepilot-client",
+      "framework": "angular"
     },
-    {
-      "source": "/(.*)",
-      "destination": "/index.html"
+    "homepilot-server": {
+      "root": "homepilot-server",
+      "framework": "express"
     }
+  },
+  "rewrites": [
+    { "source": "/api/(.*)", "destination": { "service": "homepilot-server" } },
+    { "source": "/(.*)", "destination": { "service": "homepilot-client" } }
   ]
 }
