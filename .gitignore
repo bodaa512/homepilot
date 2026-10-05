@@ -1,0 +1,25 @@
+# ---- Secrets: NEVER commit these ----
+.env
+.env.*
+!.env.example
+
+# ---- Dependencies & build output ----
+node_modules/
+dist/
+out-tsc/
+.angular/
+coverage/
+
+# ---- User uploads (generated at runtime) ----
+homepilot-server/uploads/
+
+# ---- Logs ----
+*.log
+npm-debug.log*
+
+# ---- OS / editor ----
+.DS_Store
+__MACOSX/
+.idea/
+.vscode/*
+!.vscode/extensions.json

@@ -1,0 +1,29 @@
+version: '3.8'
+
+services:
+  mongo:
+    image: mongo:7
+    restart: unless-stopped
+    ports:
+      - '27017:27017'
+    volumes:
+      - homepilot_mongo_data:/data/db
+
+  server:
+    build: .
+    restart: unless-stopped
+    ports:
+      - '5000:5000'
+    env_file:
+      - .env
+    environment:
+      - MONGO_URI=mongodb://mongo:27017/homepilot
+      - PORT=5000
+    volumes:
+      - homepilot_uploads:/app/uploads
+    depends_on:
+      - mongo
+
+volumes:
+  homepilot_mongo_data:
+  homepilot_uploads:

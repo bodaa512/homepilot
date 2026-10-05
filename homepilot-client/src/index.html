@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+  <head>
+    <meta charset="utf-8" />
+    <base href="/" />
+    <title>HomePilot — نظام التشغيل الرقمي لمنزلك</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
+    <meta
+      name="description"
+      content="سجّل أجهزة بيتك وضماناتك وفواتيرك في مكان واحد، واستلم تنبيه بالصيانة قبل ميعادها."
+    />
+
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&family=IBM+Plex+Mono:wght@400;500&display=swap"
+      rel="stylesheet"
+    />
+
+    <link rel="manifest" href="manifest.webmanifest" />
+    <meta name="theme-color" content="#14213d" media="(prefers-color-scheme: light)" />
+    <meta name="theme-color" content="#080f1c" media="(prefers-color-scheme: dark)" />
+    <link rel="icon" type="image/png" sizes="192x192" href="assets/icons/icon-192.png" />
+    <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png" />
+
+    <!--
+      بيقرأ الثيم المحفوظ قبل ما Angular يقلع، عشان الشاشة متولّعش أبيض
+      للحظة قبل ما الوضع الداكن يتطبّق.
+    -->
+    <script>
+      (function () {
+        try {
+          var saved = localStorage.getItem('hp_theme');
+          if (saved === 'dark' || saved === 'light') {
+            document.documentElement.setAttribute('data-hp-theme', saved);
+          }
+        } catch (e) {}
+      })();
+    </script>
+  </head>
+  <body>
+    <hp-root></hp-root>
+  </body>
+</html>

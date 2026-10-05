@@ -1,0 +1,206 @@
+/* =========================================================================
+   HomePilot — Design Tokens
+   -------------------------------------------------------------------------
+   كل لون/مسافة/خط في التطبيق بيتقرأ من هنا. متكتبش قيمة ثابتة في أي
+   كومبوننت — استخدم الـ token، عشان تغيير الهوية كلها يبقى من ملف واحد.
+
+   قاعدة الحالة (مهمة): الألوان التلاتة دي إشارات مش زينة —
+     أخضر   = تمام، متعملش حاجة
+     كهرماني = في ميعاد جاي
+     أحمر   = فات الميعاد
+   استخدمهم بنفس المعنى في كل شاشة عشان المستخدم يتعلّمهم مرة واحدة.
+   ========================================================================= */
+
+:root {
+  /* ---------- 1. الألوان الأساسية (primitives) ---------- */
+  --hp-navy-900: #0b1628;
+  --hp-navy-800: #0f1c33;
+  --hp-navy-700: #14213d;   /* لون الهوية الأساسي */
+  --hp-navy-600: #1d2e52;
+  --hp-navy-400: #4e6a99;
+
+  --hp-slate-50:  #f3f6fa;
+  --hp-slate-100: #e9edf3;
+  --hp-slate-200: #dbe2ec;
+  --hp-slate-300: #cbd4e1;
+  --hp-slate-400: #9faec4;
+  --hp-slate-500: #7d8da3;
+  --hp-slate-600: #5b6a80;
+  --hp-slate-800: #263449;
+  --hp-slate-900: #101c2e;
+
+  --hp-green-600: #1c8a6b;
+  --hp-green-50:  #e1f2ec;
+  --hp-amber-600: #d9922a;
+  --hp-amber-700: #9a6612;
+  --hp-amber-50:  #fbf0dc;
+  --hp-red-600:   #be3f2b;
+  --hp-red-50:    #fae7e3;
+  --hp-blue-600:  #2d6cb5;
+  --hp-blue-50:   #e6eef9;
+
+  /* ---------- 2. الألوان بالمعنى (semantic) ---------- */
+  --hp-bg:            var(--hp-slate-100);   /* خلفية التطبيق */
+  --hp-surface:       #ffffff;               /* الكروت والبلوكات */
+  --hp-surface-sunken: var(--hp-slate-50);   /* رؤوس الجداول، hover */
+  --hp-surface-inverse: var(--hp-navy-900);  /* لوحة القيادة الداكنة */
+
+  --hp-text:          var(--hp-slate-900);
+  --hp-text-muted:    var(--hp-slate-600);
+  --hp-text-inverse:  #e7eefa;
+  --hp-text-inverse-muted: #94a9c8;
+
+  --hp-border:        var(--hp-slate-300);
+  --hp-border-strong: var(--hp-slate-400);
+  --hp-border-inverse: rgba(255, 255, 255, 0.12);
+
+  --hp-primary:       var(--hp-navy-700);
+  --hp-primary-hover: var(--hp-navy-800);
+  --hp-primary-text:  #ffffff;
+
+  --hp-accent:        var(--hp-amber-600);
+  --hp-accent-hover:  #c6841f;
+  --hp-accent-text:   #26170a;
+
+  --hp-link:          var(--hp-blue-600);
+
+  /* حالات — استخدمها بالمعنى المكتوب فوق */
+  --hp-ok:        var(--hp-green-600);
+  --hp-ok-bg:     var(--hp-green-50);
+  --hp-ok-text:   var(--hp-green-600);
+  --hp-due:       var(--hp-amber-600);
+  --hp-due-bg:    var(--hp-amber-50);
+  --hp-due-text:  var(--hp-amber-700);
+  --hp-late:      var(--hp-red-600);
+  --hp-late-bg:   var(--hp-red-50);
+  --hp-late-text: var(--hp-red-600);
+  --hp-info:      var(--hp-blue-600);
+  --hp-info-bg:   var(--hp-blue-50);
+  --hp-info-text: var(--hp-blue-600);
+
+  /* ---------- 3. الخطوط ---------- */
+  --hp-font: "IBM Plex Sans Arabic", "Segoe UI", system-ui, -apple-system, sans-serif;
+  --hp-font-mono: "IBM Plex Mono", ui-monospace, "SFMono-Regular", monospace;
+
+  --hp-text-xs:  13px;
+  --hp-text-sm:  14px;
+  --hp-text-md:  16px;
+  --hp-text-lg:  20px;
+  --hp-text-xl:  26px;
+  --hp-text-2xl: 34px;
+  --hp-text-3xl: 46px;
+
+  --hp-weight-light:  300;
+  --hp-weight-normal: 400;
+  --hp-weight-medium: 500;
+  --hp-weight-semi:   600;
+  --hp-weight-bold:   700;
+
+  --hp-leading-tight: 1.25;
+  --hp-leading-body:  1.65;
+  --hp-leading-loose: 1.8;
+
+  /* ---------- 4. المسافات ---------- */
+  --hp-space-1: 4px;
+  --hp-space-2: 8px;
+  --hp-space-3: 12px;
+  --hp-space-4: 16px;
+  --hp-space-5: 20px;
+  --hp-space-6: 24px;
+  --hp-space-8: 32px;
+  --hp-space-10: 40px;
+  --hp-space-12: 56px;
+  --hp-space-16: 72px;
+
+  /* ---------- 5. الحواف والظلال ---------- */
+  /* نصف قطر مختلف حسب الأهمية — مش رقم واحد على كل حاجة */
+  --hp-radius-sm: 5px;    /* شارات، عناصر صغيرة */
+  --hp-radius-md: 8px;    /* أزرار، حقول، بلوكات */
+  --hp-radius-lg: 18px;   /* اللوحة البطل في الشاشة */
+  --hp-radius-pill: 999px;
+
+  /* الظل نادر — البنية بتتعمل بخطوط رفيعة مش بظلال */
+  --hp-shadow-sm: 0 1px 2px rgba(16, 28, 46, 0.06);
+  --hp-shadow-md: 0 1px 2px rgba(16, 28, 46, 0.06), 0 8px 24px -12px rgba(16, 28, 46, 0.18);
+  --hp-shadow-pop: 0 12px 32px -8px rgba(11, 22, 40, 0.28);
+
+  /* ---------- 6. أبعاد التخطيط ---------- */
+  --hp-sidebar-w: 232px;
+  --hp-topbar-h: 64px;
+  --hp-content-max: 1240px;
+
+  /* ---------- 7. الحركة ---------- */
+  --hp-ease: cubic-bezier(0.2, 0, 0.2, 1);
+  --hp-duration-fast: 120ms;
+  --hp-duration: 180ms;
+
+  /* ---------- 8. الطبقات ---------- */
+  --hp-z-sticky: 20;
+  --hp-z-drawer: 60;
+  --hp-z-modal: 80;
+  --hp-z-toast: 100;
+
+  color-scheme: light dark;
+}
+
+/* =========================================================================
+   الوضع الداكن — بيشتغل أوتوماتيك حسب إعداد الجهاز،
+   ويتقفل يدوي بـ <html data-hp-theme="light"> أو يتفتح بـ "dark".
+   ========================================================================= */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-hp-theme="light"]) {
+    --hp-bg:             #080f1c;
+    --hp-surface:        #0f1a2b;
+    --hp-surface-sunken: #152238;
+    --hp-surface-inverse: #0b1424;
+
+    --hp-text:       #e7edf6;
+    --hp-text-muted: #98a9c2;
+
+    --hp-border:        #233350;
+    --hp-border-strong: #3a4e6f;
+
+    --hp-primary:       #2b3f68;
+    --hp-primary-hover: #344b7a;
+
+    --hp-ok-bg:   #0e2f27;
+    --hp-due-bg:  #3a2c13;
+    --hp-due-text: #e0a94a;
+    --hp-late-bg: #33150f;
+    --hp-late-text: #e0786a;
+    --hp-info-bg: #12243c;
+    --hp-info-text: #7fadeb;
+    --hp-link:    #7fadeb;
+
+    --hp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+    --hp-shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+  }
+}
+
+:root[data-hp-theme="dark"] {
+  --hp-bg:             #080f1c;
+  --hp-surface:        #0f1a2b;
+  --hp-surface-sunken: #152238;
+  --hp-surface-inverse: #0b1424;
+
+  --hp-text:       #e7edf6;
+  --hp-text-muted: #98a9c2;
+
+  --hp-border:        #233350;
+  --hp-border-strong: #3a4e6f;
+
+  --hp-primary:       #2b3f68;
+  --hp-primary-hover: #344b7a;
+
+  --hp-ok-bg:   #0e2f27;
+  --hp-due-bg:  #3a2c13;
+  --hp-due-text: #e0a94a;
+  --hp-late-bg: #33150f;
+  --hp-late-text: #e0786a;
+  --hp-info-bg: #12243c;
+  --hp-info-text: #7fadeb;
+  --hp-link:    #7fadeb;
+
+  --hp-shadow-sm: 0 1px 2px rgba(0, 0, 0, 0.4);
+  --hp-shadow-md: 0 1px 2px rgba(0, 0, 0, 0.4), 0 8px 24px -12px rgba(0, 0, 0, 0.6);
+}

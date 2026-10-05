@@ -1,0 +1,13 @@
+{
+  "name": "HomePilot",
+  "short_name": "HomePilot",
+  "lang": "ar",
+  "dir": "rtl",
+  "start_url": "/app/home",
+  "display": "standalone",
+  "background_color": "#14213d",
+  "theme_color": "#14213d",
+  "icons": [
+    { "src": "assets/icons/icon-192.png", "sizes": "192x192", "type": "image/png", "purpose": "any" }
+  ]
+}

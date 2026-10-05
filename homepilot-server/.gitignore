@@ -1,0 +1,14 @@
+# Secrets — real values live only in your local .env (copy from .env.example)
+.env
+.env.*
+!.env.example
+
+node_modules/
+dist/
+coverage/
+
+# Created at runtime by the upload middleware
+uploads/
+
+*.log
+.DS_Store

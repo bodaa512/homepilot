@@ -1,0 +1,15 @@
+# Build output
+/dist
+/out-tsc
+
+# Dependencies
+/node_modules
+
+# Angular cache
+/.angular
+
+# OS / editor
+.DS_Store
+.vscode/*
+!.vscode/extensions.json
+.idea/
